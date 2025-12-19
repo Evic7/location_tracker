@@ -32,10 +32,6 @@ ip2geotools for IP lookup
 
 Frontend: HTML templates (Jinja2)
 
-Screenshots
-(Once deployed or run locally, add screenshots here of the home page and results page!)
-Installation & Setup
-
 Clone the repository: git clone https://github.com/Evic7/phone_number_locator.git
 
 cd phone_number_locator
