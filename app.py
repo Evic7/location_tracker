@@ -63,9 +63,6 @@ def locator():
       phoneNumber = phonenumbers.parse(number1)
       
       # Storing the API Key in the Key variable
-      Key='3e2e0c0712504517a9e2bdfb4b29be29'
-
-      
       # Get the key from environment variable, fallback for local testing
       Key = os.getenv("OPENCAGE_KEY", "No key found")  # Optional fallback
       if not Key or Key == "No key found":
@@ -124,3 +121,4 @@ if __name__ == "__main__":
     #app.run(debug=True)
 
     app.run()
+
