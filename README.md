@@ -32,9 +32,9 @@ ip2geotools for IP lookup
 
 Frontend: HTML templates (Jinja2)
 
-Clone the repository: git clone https://github.com/Evic7/phone_number_locator.git
+Clone the repository: git clone https://github.com/Evic7/location_tracker.git
 
-cd phone_number_locator
+cd location_tracker
 Create a virtual environment (recommended): 
 python -m venv venv
 source venv/bin/activate 
@@ -69,7 +69,7 @@ The map will embed directly in the results page
 
 Project Structure
 ```
-phone_number_locator/
+location_tracker/
 ├── app.py                    # Main Flask application
 ├── requirements.txt          # Python dependencies
 ├── vercel.json               # Vercel deployment config
