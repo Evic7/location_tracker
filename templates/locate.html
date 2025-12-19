@@ -4,89 +4,205 @@
 <title> Locator </title>
 
 <style>
-    *{
-        font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-    #locate{
-        width: 100%;
-        position: fixed;
-        background-color: white;
-        height: -webkit-fill-available;
-        top: 0;
-        left: 0;
-        display: none;
-        animation-name: rowup;
-        animation-duration: 1s;
-        overflow: auto;
-        border-radius: 10px;
-        z-index: 8;
-    }
-    @keyframes rowup {
-     0%{ top:100% }
-     15%{ top:85% }
-     25%{ top:65% }
-     50%{ top:45% }
-     75%{ top:25% }
-     100%{top:0 }   
-    }
-#hidelocate{
-    width: 3%;
-    height: 45px;
-    position: absolute;
-    top: 0;
-    right: 0;
-    color: white;
-    background-color: green;
-    border-radius: 30px;
-    font-size: x-large;
-    cursor: pointer;
-    text-align: center;
-    border-top-left-radius: 3px;
+/* Global base */
+* {
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
-#hidelocate:active{
-    background-color: black;
-}
-#errorhandler{
-    text-align: center;
-    width: 100%;
-    z-index: 5;
-    color: red;
-    position: absolute;
-    height: -webkit-fill-available;
-    font-size: xx-large;
-    background-color: white;
-    display: none;
 
+body {
+    margin: 0;
+    background-color: #0b1020;
+    color: #e5e7eb;
 }
-#fulldetail{
-    z-index: 10;
-    width: fit-content;
-    height: fit-content;
-    text-align: center;
+
+/* Slide-up locate container */
+#locate {
     position: fixed;
-    color: white;
-    font-size: x-large;
-    background-color: black;
-    border-radius: 10px;
-    top: 41%;
-    left: 25%;
+    inset: 0;
+    width: 100%;
+    height: -webkit-fill-available;
+    background-color: #0f172a;
     display: none;
+    overflow: auto;
+    border-radius: 12px 12px 0 0;
+    z-index: 8;
+    animation: rowup 0.8s ease-out;
 }
-ul{
-border:1px solid white;
-list-style-type: none;
-margin: 0;
-padding: 0;
+
+/* Smooth slide-up animation */
+@keyframes rowup {
+    from { top: 100%; }
+    to { top: 0; }
 }
-li{
-border:1px solid white
+
+/* Hide / close button */
+#hidelocate {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #dc2626, #b91c1c);
+    color: #ffffff;
+    font-size: 26px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.45);
+    transition: transform 0.12s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+    z-index: 20;
 }
+
+/* Hover state */
+#hidelocate:hover {
+    transform: scale(1.08);
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.6);
+}
+
+/* Active / pressed */
+#hidelocate:active {
+    transform: scale(0.94);
+    background: #7f1d1d;
+}
+
+/* Optional focus visibility (keyboard safe) */
+#hidelocate:focus {
+    outline: 2px solid rgba(220, 38, 38, 0.6);
+    outline-offset: 2px;
+}
+
+
+/* Header content */
+#locatemain {
+    padding: 25px 30px;
+    background-color: #020617;
+    border-bottom: 1px solid #1e293b;
+}
+
+#locatemain h3 {
+    margin: 0;
+    font-weight: 500;
+    font-size: 20px;
+    color: #f8fafc;
+}
+
+/* Error handler */
+#errorhandler {
+    position: fixed;
+    inset: 0;
+    display: none;
+    background-color: #020617;
+    color: #ef4444;
+    font-size: 26px;
+    font-weight: 600;
+    text-align: center;
+    padding-top: 20%;
+    z-index: 15;
+}
+
+/* Full detail modal */
+#fulldetail {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #020617;
+    color: #e5e7eb;
+    padding: 20px;
+    border-radius: 14px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+    font-size: 18px;
+    display: none;
+    z-index: 20;
+}
+
+/* Detail list */
+ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid #1e293b;
+}
+
+li {
+    padding: 12px 16px;
+    border-bottom: 1px solid #1e293b;
+    background-color: #020617;
+}
+
+li:last-child {
+    border-bottom: none;
+}
+
+/* Section divider (IP header) */
+li[style*="background-color:red"] {
+    background-color: #991b1b !important;
+    color: #ffffff !important;
+    font-weight: 600;
+    text-align: center;
+}
+
+/* Close button inside list */
+li[onclick="closedetails()"] {
+    background-color: #22c55e !important;
+    color: #000000 !important;
+    font-weight: 600;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+li[onclick="closedetails()"]:hover {
+    background-color: #16a34a !important;
+}
+
+/* Buttons inside header */
+#locatemain button {
+    margin-left: 10px;
+    padding: 4px 14px;
+    font-size: 18px !important;
+    font-weight: 600;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    transition: transform 0.1s ease, opacity 0.2s ease;
+}
+
+#locatemain button:hover {
+    opacity: 0.9;
+}
+
+#locatemain button:active {
+    transform: scale(0.96);
+}
+
+/* Map iframe */
+
+#mapframe {
+    width: 100%;
+    height: 450px;
+    border: none;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-top: 20px;
+    opacity: 1;
+    transition: opacity 0.4s ease;
+}
+
 </style>
 </head>
 <body>
     
     <div id="hidelocate" onclick="hidelocator()">
-        v
+        &darr;
     </div>
     <div id="locatemain">
         <h3>{{outputs["phone1"]}} Click detail for full details <button id="detail" onclick="showdetails()" style="width: 15%;
@@ -112,13 +228,13 @@ border:1px solid white
     <div id="fulldetail">
      <ul>
         <li>
-            Carrier/ServiceProvider|{{outputs["serviceprovider"]}}
+            Carrier/ServiceProvider| {{outputs["serviceprovider"]}}
         </li>
         <li>
-            Location|{{outputs["location"]}}
+            Location| {{outputs["location"]}}
         </li>
         <li>
-            Position|Latitude:{{outputs["lat1"]}}, Longitude:{{outputs["lng1"]}}
+            Position| Latitude:{{outputs["lat1"]}}, Longitude:{{outputs["lng1"]}}
         </li>
 
         <!-- for ip -->
@@ -126,13 +242,28 @@ border:1px solid white
             IPV4 ADDRESS DETAILS
         </li>
         <li>
-            IPAdress:{{outputs["ipaddress"]}}
+            IPAdress: {{outputs["ipaddress"]}}
         </li>
         <li>
-            Location:{{outputs["iplocation"]}}
+            Location: {{outputs["iplocation"]}}
         </li>
         <li>
-            Coordinates:{{outputs["ipcoord"]}}
+            Coordinates: {{outputs["ipcoord"]}}
+        </li>
+		<li style="background-color:red;color:white;">
+            OTHER INFORMATION
+        </li>
+		<li>
+            Isp: {{outputs["isp"]}}
+        </li>
+		<li>
+            Org: {{outputs["org"]}}
+        </li>
+		<li>
+            Timezone: {{outputs["timezone"]}}
+        </li>
+		<li>
+            Proxy/VPN: {{outputs["proxy_vpn"]}}
         </li>
         <li onclick="closedetails()" style="cursor:pointer;background-color:lawngreen">
             close
@@ -144,7 +275,6 @@ border:1px solid white
     <span id="lng" style="display:none">{{outputs["lng1"]}}</span>
     <span id="map" style="display:none">{{outputs["mapframe"]}}</span>
     <iframe id="mapframe" style="width: 100%;height: 100%;border-top-left-radius: 10px;border-top-right-radius: 10px;border:none;" target="_parent" src="" frameborder="0"></iframe>
-     
 
 <body>
 </html>

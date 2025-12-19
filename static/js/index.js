@@ -15,16 +15,49 @@ responses("Update your browser.");
 }
 }
 
+let lastLat = null;
+let lastLng = null;
+const MIN_DISTANCE_METERS = 20;  // Only update if moved more than 20m
+
 function showPosition(position) {
-var mframe = document.getElementById("mapframe")
-latde=position.coords.latitude
-lngtde=position.coords.longitude
+    const newLat = position.coords.latitude;
+    const newLng = position.coords.longitude;
+    const mframe = document.getElementById("mapframe");
 
-//responses("Latitude: " + position.coords.latitude + 
-//"<br>Longitude: " + position.coords.longitude)
+    // If no previous position, update immediately
+    if (lastLat === null || lastLng === null) {
+        lastLat = newLat;
+        lastLng = newLng;
+        updateMapIframe(newLat, newLng, mframe);
+        return;
+    }
 
-mframe.src="https://maps.google.com/maps?q="+position.coords.latitude+","+position.coords.longitude+"&amp;z=15&amp;&output=embed" 
+    // Calculate rough distance (good enough for this)
+    const latDiff = Math.abs(newLat - lastLat);
+    const lngDiff = Math.abs(newLng - lastLng);
+    const distance = Math.sqrt(latDiff * latDiff + lngDiff * lngDiff) * 111000; // ~meters
 
+    if (distance < MIN_DISTANCE_METERS) {
+        return; // Skip tiny movements → no reload
+    }
+
+    lastLat = newLat;
+    lastLng = newLng;
+
+    updateMapIframe(newLat, newLng, mframe);
+}
+
+function updateMapIframe(lat, lng, iframe) {
+    // Smooth fade to hide flicker
+    iframe.style.opacity = "0.3";
+    iframe.style.transition = "opacity 0.4s";
+
+    iframe.src = `https://maps.google.com/maps?q=${lat},${lng}&z=15&output=embed`;
+
+    // Fade back in when loaded
+    iframe.onload = () => {
+        iframe.style.opacity = "1";
+    };
 }
 
 function showError(error) {
@@ -107,26 +140,24 @@ function loadDoc() {
  function closedetails(){
   document.getElementById("fulldetail").style.display="none"
  }
- function internalmsg(){
-  var frame = document.getElementById("mapframe")
-  var numlat = document.getElementById("lat")
-  var numlng = document.getElementById("lng")
-  var er = document.getElementById("internalerror")
-  var map = document.getElementById("map")
-  if (er.innerHTML != ""){
-    responses(er.innerHTML)
-  }else if (numlat.innerHTML == ""){
-    responses("Phone number location is not available")
-
-  }else if (numlng.innerHTML == ""){
-    responses("Phone number location is not available")
-
-  }else{
-
-frame.src="https://maps.google.com/maps?q="+numlat.innerHTML+","+numlng.innerHTML+"&amp;z=15&amp;&output=embed" 
-
-//responses(map.innerText)
+ 
+function internalmsg(){
+  var frame = document.getElementById("mapframe")
+  var numlat = document.getElementById("lat")
+  var numlng = document.getElementById("lng")
+  var er = document.getElementById("internalerror")
+  var map = document.getElementById("map")
+  if (er.innerHTML != ""){
+    responses(er.innerHTML)
+  }else if (numlat.innerHTML == ""){
+    responses("Phone number location is not available")
+  }else if (numlng.innerHTML == ""){
+    responses("Phone number location is not available")
+  }else{
+     frame.src="https://maps.google.com/maps?q="+numlat.innerHTML+","+numlng.innerHTML+"&amp;z=15&amp;&output=embed"
+    //responses(map.innerText)
+  }
 }
-}
+
 
 

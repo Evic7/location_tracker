@@ -6,8 +6,6 @@ from phonenumbers import carrier
 import folium
 import socket
 import requests
-from ip2geotools.databases.noncommercial import DbIpCity
-from geopy.distance import distance
 from opencage.geocoder import OpenCageGeocode
 
 
@@ -33,28 +31,39 @@ def locator():
   if request.method == 'POST':
       number1 = request.form['pnumber']
       outputs = {"phone1":number1}
-      
-      if "." in number1:
-        try:
-          res = DbIpCity.get(number1, api_key="free")
-          #print(f"IP Address: {res.ip_address}")
-          outputs.update({"ipaddress": res.ip_address})
-          #print(f"Location: {res.city}, {res.region}, {res.country}")
-          outputs.update({"iplocation": res.city+","+res.region+","+res.country })
-          #print(f"Coordinates: (Lat: {res.latitude}, Lng: {res.longitude})")
-          outputs.update({"ipcoord": f"Coordinates: (Lat: {res.latitude}, Lng: {res.longitude})"})
-          outputs.update({"lat1": res.latitude})
-          outputs.update({"lng1": res.longitude})
-        except Exception as e:
-          #print(e)
-          outputs.update({"mainerror": "An error occured while getting ip details you can try again"})
-        return render_template("locate.html",outputs = outputs)  
+        
+      if "." in number1:  # Assuming this checks for IP format
+       try:
+        api_url = f"http://ip-api.com/json/{number1}"
+        res = requests.get(api_url).json()
+        if res["status"] == "success":
+            outputs.update({"ipaddress": res["query"]})
+            outputs.update({"iplocation": f"{res['city']}, {res['regionName']}, {res['country']}"})
+            outputs.update({"ipcoord": f"Coords: (Lat: {res['lat']}, Lng: {res['lon']})"})
+            outputs.update({"lat1": res["lat"]})
+            outputs.update({"lng1": res["lon"]})
+            #Extras
+            outputs.update({"isp": res.get("isp", "Unknown")})
+            outputs.update({"org": res.get("org", "Unknown")})  # Often the company/network owner
+            outputs.update({"timezone": res.get("timezone", "Unknown")})
+            
+            # Proxy/VPN/Mobile detection
+            proxy_status = "Yes" if res.get("proxy", False) else "No"
+            outputs.update({"proxy_vpn": proxy_status})
+            
+        else:
+           outputs.update({"mainerror": f"IP lookup failed: {res.get('message', 'Unknown error')}" })
+       except Exception as e:
+           outputs.update({"mainerror": "An error occurred while getting IP details. Try again."})
+    
+       return render_template("locate.html", outputs=outputs)
+       
       # Parsing the phonenumber string to convert it into phonenumber format
       phoneNumber = phonenumbers.parse(number1)
       
       # Storing the API Key in the Key variable
-      Key = "875749ed67fa42288d1e1ba4a255350c"
-      #Key='3e2e0c0712504517a9e2bdfb4b29be29'   #backup key
+      #Key = "875749ed67fa42288d1e1ba4a255350c"
+      Key='3e2e0c0712504517a9e2bdfb4b29be29'   #backup key
  
       # Using the geocoder module of phonenumbers to print the Location in console
       yourLocation = geocoder.description_for_number(phoneNumber,"en")
@@ -76,6 +85,9 @@ def locator():
       # Assigning the latitude and longitude values to the lat and lng variables
       lat = results[0]['geometry']['lat']
       lng = results[0]['geometry']['lng']
+      if lat is None or lng is None:
+          outputs.update({"mainerror": "Could not geocode the location (vague region or API issue)"})
+          
       outputs.update({"lat1": lat})
       outputs.update({"lng1": lng})
       """  # Getting the map for the given latitude and longitude
@@ -101,4 +113,5 @@ def locator():
  return render_template("locate.html",outputs = outputs)
  
 if __name__ == "__main__":
-    app.run(debug=True)
+    #app.run(debug=True)
+    app.run()
