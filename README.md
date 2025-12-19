@@ -114,6 +114,3 @@ Add timezone info or more details.
 This project is for educational purposes only. Respect privacy laws—do not use for harassment, stalking, or illegal activities. Location data is approximate and often only region-level.
 Contributing
 Feel free to fork, improve the UI/map, fix bugs, or add features! Open issues or submit pull requests.
-
-This README will make your repo look professional and highlight your Flask/web dev skills—great for job applications! 🚀
-Copy this into a README.md file in your repo root and commit it. If you have screenshots or want to add more details (like exact template code), let me know for tweaks.
